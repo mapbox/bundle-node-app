@@ -1,0 +1,11 @@
+{
+  "name": "bundle-node-app",
+  "version": "0.0.0",
+  "description": "Bundle node apps",
+  "author": "Mapbox",
+  "license": "ISC",
+  "private": true,
+  "bin": {
+    "bundle_node_app": "./bin/bundle_node_app"
+  }
+}

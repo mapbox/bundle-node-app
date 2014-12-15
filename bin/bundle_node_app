@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+cwd=$(pwd)
+
+if [ -z "${GS+1}" ] || [ -z "${NP+1}" ] || [ -z "${NV+1}" ]; then
+    gitsha=${1:-"master"}
+    platformarch=${2:-"$(uname -s | tr '[:upper:]' '[:lower:]')-x64"}
+    node_version=${3:-"0.10.30"}
+else
+    gitsha=$GS
+    platformarch=$NP
+    node_version=$NV
+fi
+
+set -e -u
+set -o pipefail
+
+if ! which git > /dev/null; then echo "not ok - git command not found"; exit 1; fi;
+if ! which npm > /dev/null; then echo "not ok - npm command not found"; exit 1; fi;
+if ! which node > /dev/null; then echo "not ok - node command not found"; exit 1; fi;
+if ! which tar > /dev/null; then echo "not ok - tar command not found"; exit 1; fi;
+if ! which zip > /dev/null; then echo "not ok - zip command not found"; exit 1; fi;
+
+platform=$(echo $platformarch | grep -oE '(linux|darwin|win32)')
+arch=$(echo $platformarch | grep -oE '(ia32|x64)')
+repo="$(git config --get remote.origin.url | grep -oE '([^/]+)\.git' | grep -oE '^[^\.]+')"
+build_dir="/tmp/$repo-$platform-$arch-$gitsha"
+
+echo "# building bundle in $build_dir"
+
+if [ -d $build_dir ]; then
+    echo "not ok - Build dir $build_dir already exists"
+    exit 1
+fi
+
+if [ -d $build_dir-git ]; then
+    echo "not ok - Build dir $build_dir-git already exists"
+    exit 1
+fi
+
+# sanitize files to be bundled:
+# copy from current git repo to /tmp, checkout + cleanup, and then use
+# npm pack to generate a tarball of the project respecting .npmignore
+cp -pr $(git rev-parse --show-toplevel) $build_dir-git
+cd $build_dir-git
+git checkout $gitsha
+git clean -f
+npm pack
+
+# untar cleaned project and npm install + npm dedupe
+mkdir -p $build_dir
+tar --strip-components=1 -zxf *.tgz --directory=$build_dir
+cd $build_dir
+rm -rf $build_dir-git
+
+BUILD_PLATFORM=$platform npm install --production \
+--target_platform=$platform \
+--target=$node_version \
+--target_arch=$arch \
+--fallback-to-build=false
+
+npm dedupe
+
+# determine version from package.json
+ver=$(node -e "console.log(require('$build_dir/package.json').version);")
+
+# zip up
+cd /tmp
+zip -qr $build_dir.zip $(basename $build_dir)
+mv $build_dir.zip $cwd/$(basename $build_dir.zip)
+rm -rf $build_dir
+
+# finish
+cd $cwd
+echo "ok - bundle at $(basename $build_dir.zip)"
+exit 0
+
