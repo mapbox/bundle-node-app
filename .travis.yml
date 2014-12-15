@@ -1,0 +1,12 @@
+language: python
+env:
+  global:
+  - AWS_DEFAULT_REGION: us-east-1
+  - secure: "Tq1HqgkywKQAh/z0GsSLXtYAvGaoHwWntyCHynhP5BstjOhuYzC37e0ITyo2sw1lBYdn9loMAQXxB3ViIpRHUQhM7zR5GXqTd6CX5SKGgpV5o2OiGsoFze4zZaHPh0yed0l9TweJslchSBzzuEGc8oVE7TjPvsOCofVTxtBju8k="
+  - secure: "FLsk39HhUYdMg6geF/yT6bipfmTz0GKjWxKsuLQ08dRE8SP0WKEZdWQCqXYL1XavL6KEnQyee0ccypSV2TA8GurebpTS2mIVYFrakjdOAPDudLVSsePzHspTPpIM9XCahqMNgvaWQNEiOOlemXt7X1UCEOq8Bst5//aj4Z2CX9A="
+install:
+- pip install awscli
+script:
+- "./test/publish.sh"
+- "./test/test.sh"
+
