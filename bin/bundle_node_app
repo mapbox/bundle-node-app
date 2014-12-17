@@ -23,7 +23,7 @@ if ! which zip > /dev/null; then echo "not ok - zip command not found"; exit 1; 
 
 platform=$(echo $platformarch | grep -oE '(linux|darwin|win32)')
 arch=$(echo $platformarch | grep -oE '(ia32|x64)')
-repo="$(git config --get remote.origin.url | grep -oE '([^/]+)\.git' | grep -oE '^[^\.]+')"
+repo="$(git config --get remote.origin.url | grep -oE '([^/]+)$' | grep -oE '^[^\.]+')"
 build_dir="/tmp/$repo-$platform-$arch-$gitsha"
 
 echo "# building bundle in $build_dir"
@@ -43,9 +43,9 @@ fi
 # npm pack to generate a tarball of the project respecting .npmignore
 cp -pr $(git rev-parse --show-toplevel) $build_dir-git
 cd $build_dir-git
-git checkout $gitsha
-git clean -f
-npm pack
+git checkout -q $gitsha &> /dev/null
+git clean -q -f
+npm pack &> /dev/null
 
 # untar cleaned project and npm install + npm dedupe
 mkdir -p $build_dir
@@ -57,9 +57,9 @@ BUILD_PLATFORM=$platform npm install --production \
 --target_platform=$platform \
 --target=$node_version \
 --target_arch=$arch \
---fallback-to-build=false
+--fallback-to-build=false &> /dev/null
 
-npm dedupe
+npm dedupe &> /dev/null
 
 # determine version from package.json
 ver=$(node -e "console.log(require('$build_dir/package.json').version);")
