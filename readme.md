@@ -7,8 +7,6 @@ so it can be installed and run without npm/node being present.
 ## Requirements
 
 - Your app must be a git repo.
-- Your app must have a package.json `preinstall` installing a vendor node binary (e.g. use [install-node](https://github.com/mapbox/install-node)).
-- Your app must have a start script that runs your app using your vendor node binary.
 
 ## Usage
 
