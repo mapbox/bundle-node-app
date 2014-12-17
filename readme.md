@@ -30,6 +30,6 @@ parameters as environment variables:
 
 ```
 cd my-project
-curl https://s3.amazonaws.com/mapbox/apps/bundle-node-app/v0.1.1/run | GS=master NP=linux-x64 NV=0.10.26 bash
+curl https://s3.amazonaws.com/mapbox/apps/bundle-node-app/v0.2.0/run | GS=master NP=linux-x64 NV=0.10.26 bash
 ```
 
