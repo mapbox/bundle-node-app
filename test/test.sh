@@ -66,6 +66,9 @@ cd $test/testapp
 # no args, builds current platform @ master
 assertExit0 "$bundle_node_app"
 assertOk $test/testapp/testapp-linux-x64-master.zip
+echo "PWD $(pwd)"
+ls $test/testapp
+ls $(pwd)
 unpack_bundle $test/testapp/testapp-linux-x64-master.zip
 assertOk $tmp/testapp-linux-x64-master
 assertOk $tmp/testapp-linux-x64-master/v2.txt
