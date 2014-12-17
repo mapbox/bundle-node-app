@@ -114,5 +114,20 @@ assertOk $tmp/testapp-darwin-x64-master/node_modules/sqlite3/lib/binding/node-v1
 assertOk $tmp/testapp-darwin-x64-master/node_modules/underscore
 rm -f $app/testapp/testapp-darwin-x64-master.zip
 
+## universal keyword
+assertExit0 "$bundle_node_app master universal"
+assertOk $app/testapp/testapp-universal-master.zip
+unpack_bundle $app/testapp/testapp-universal-master.zip
+assertOk $tmp/testapp-universal-master
+assertOk $tmp/testapp-universal-master/v2.txt
+assertOk $tmp/testapp-universal-master/package.json
+assertOk $tmp/testapp-universal-master/index.js
+assertNo $tmp/testapp-universal-master/exclude.txt
+assertOk $tmp/testapp-universal-master/node_modules
+assertOk $tmp/testapp-universal-master/node_modules/sqlite3
+assertOk $tmp/testapp-universal-master/node_modules/sqlite3/lib/binding/node-v11-linux-x64
+assertOk $tmp/testapp-universal-master/node_modules/underscore
+rm -f $app/testapp/testapp-universal-master.zip
+
 cd $cwd && exit $code
 

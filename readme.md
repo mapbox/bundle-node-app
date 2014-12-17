@@ -21,6 +21,8 @@ cd my-project
 bundle_node_app master darwin-x64 0.10.26
 ```
 
+For projects that are not platform/arch specific (e.g. 100% js projects) the keyword `universal` may be used for the `platform+arch` argument to generate a single universal bundle.
+
 ## Run from S3
 
 Alternately you can pull the script from S3 with `curl` and run it, specifying

@@ -21,10 +21,17 @@ if ! which node > /dev/null; then echo "not ok - node command not found"; exit 1
 if ! which tar > /dev/null; then echo "not ok - tar command not found"; exit 1; fi;
 if ! which zip > /dev/null; then echo "not ok - zip command not found"; exit 1; fi;
 
-platform=$(echo $platformarch | grep -oE '(linux|darwin|win32)')
-arch=$(echo $platformarch | grep -oE '(ia32|x64)')
 repo="$(git config --get remote.origin.url | grep -oE '([^/]+)$' | grep -oE '^[^\.]+')"
-build_dir="/tmp/$repo-$platform-$arch-$gitsha"
+
+if [ "$platformarch" == "universal" ]; then
+    platform="linux"
+    arch="x64"
+    build_dir="/tmp/$repo-$platformarch-$gitsha"
+else
+    platform=$(echo $platformarch | grep -oE '(linux|darwin|win32)')
+    arch=$(echo $platformarch | grep -oE '(ia32|x64)')
+    build_dir="/tmp/$repo-$platform-$arch-$gitsha"
+fi
 
 echo "# building bundle in $build_dir"
 
