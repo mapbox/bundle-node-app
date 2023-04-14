@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+echo "[+] Building node app"
 cwd=$(pwd)
 
 if [ -z "${GS+1}" ] || [ -z "${NP+1}" ] || [ -z "${NV+1}" ]; then
